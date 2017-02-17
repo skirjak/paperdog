@@ -24,6 +24,7 @@
     "body-parser": "1.16.0",
     "nedb": "1.8.0",
     "moment": "2.17.1",
-    "node-yaml": "3.0.3"
+    "node-yaml": "3.0.3",
+    "bluebird": "*"
   }
 }

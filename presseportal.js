@@ -44,6 +44,7 @@ function get (tags, {
   const url = requestType === 'topic'
     ? `http://api.presseportal.de/api/article/${requestType}/${requestStr}/${mediaType}?api_key=${API_KEY}&teaser=${teaser}&lang=${lang}&format=json&limit=${limit}&start=${start}`
     : `http://api.presseportal.de/api/?controller=app&method=search&type=story&q=${requestStr}&limit=${limit}&start=${start}&api_key=${API_KEY_V2}&api_version=2&lang=${lang}&format=json`
+  console.log('url ' + url)
   return Promise.fromCallback(cb => request({
     url,
     method: 'GET',

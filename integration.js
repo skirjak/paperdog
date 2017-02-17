@@ -47,13 +47,32 @@ function topics (id) {
 function topic (title) {
   return {
     title,
-    subtitle: 'cat',
-    default_action: {
-      type: 'postback',
-      payload: `TOPIC_${title.toUpperCase()}`
-    }
+    buttons :[
+      {
+        "type":"postback",
+        "title": "Bookmark Item",
+        "payload": `TOPIC_${title.toUpperCase()}`
+      }
+    ]
   }
-    
+}
+
+function stories(stories) {
+  return facebookMessage(1, cards(stories.map(story)));
+}
+
+function story(story) {
+  return {
+    title: story.title.substring(0,80),
+    subtitle: story.teaser.substring(0,80),
+    buttons :[
+      {
+        "type":"postback",
+        "title": "Bookmark Item",
+        "payload": ''
+      }
+    ]
+  }
 }
 
 //    default_action: {
@@ -108,7 +127,9 @@ module.exports = {
   welcome,
   plainMessage,
   topics,
+  stories,
   pressMessages,
   showTyping,
-  quickReply
+  quickReply,
+  story
 }

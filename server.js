@@ -5,6 +5,7 @@
 var express = require('express');
 var assert = require('assert');
 var integration = require('./integration.js');
+var presseportal = require('./presseportal.js');
 var app = express();
 app.set('json spaces', 4);
 
@@ -13,7 +14,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
 var intents = {
-    fallback: 'Default Fallback Intent'
+    fallback: 'input.uknown',
+    showStories: 'show.stories'
 }
 
 //app.use(express.static('public'));
@@ -41,19 +43,36 @@ app.post('/webhook', function (req, res) {
 
     var message = req.body;
     console.log('get message ' + message.timestamp);
-  
-    var recipientId = getRecipient(req.body);
+  console.log(presseportal);
 
-    var intent = getIntent(message);
+    var action = getAction(message);
 
-    switch(intent) {
+    switch(action) {
 
         case intents.fallback:
             
-            var responseMessage = decorateForAPI(integration.topics(recipientId));
+            var responseMessage = decorateForAPI(integration.topics(1));
             console.log(JSON.stringify(responseMessage));
             res.json(responseMessage);
             break;
+        
+      case intents.showStories:
+        
+        presseportal('merkel', { requestType: 'all'}).then((response) => {
+          
+          
+          
+          var facebookResponse = integration.stories(response.content.story);
+          
+          console.log('response ' + JSON.stringify(decorateForAPI(facebookResponse)));
+          
+          res.json(decorateForAPI(facebookResponse));
+          
+        }, (error) => {
+          console.err(error)
+        });
+          
+        break;
 
         default: res.status(200);
 
@@ -70,7 +89,6 @@ var server = app.listen(process.env.PORT || 3000, function () {
 function decorateForAPI(facebookResponse) {
 
   return {
-
 
       "speech": "Barack ",
       "displayText": "Barack Hussein",
@@ -97,4 +115,8 @@ function getIntent(message) {
 
 function getContext(message) {
 
+}
+
+function getAction(message) {
+  return message.result.action;
 }
