@@ -50,7 +50,7 @@ function topic (title) {
     buttons :[
       {
         "type":"postback",
-        "title": "Bookmark Item",
+        "title": "Auswählen",
         "payload": `TOPIC_${title.toUpperCase()}`
       }
     ]
@@ -65,8 +65,9 @@ function story(story) {
   return {
     title: story.title.substring(0, 80),
     subtitle: story.teaser.substring(0, 80),
+    image_url: 'http://cache.pressmailing.net/thumbnail/liste/60fce31c-0594-4b64-8fc3-43f8c3bed618/news-aktuell-gmbh-blogpost-app-check-refind-dein-neues-digitales-gedaechtnis?crop=0,1,290,190',
     buttons :[
-             {
+      {
         "type":"web_url",
         "url": story.url,
         "title": 'Lesen'
