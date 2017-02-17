@@ -41,7 +41,9 @@ app.post('/webhook', function (req, res) {
 
   console.log(JSON.stringify(integration.topics(recipientId), null, '\t'));
 
-  res.send(200).end();
+  var responseMessage = decorateForAPI(integration.topics(recipientId));
+
+  res.status(200).send(responseMessage);
 
 });
 
@@ -71,5 +73,5 @@ function getRecipient(message) {
   assert(message);
   assert(message.originalRequest);
 
-  return message.originalRequest.recipient.id;
+  return message.originalRequest.data.recipient.id;
 }
