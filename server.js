@@ -19,10 +19,28 @@ var Datastore = require('nedb'),
 // which doesn't get copied if someone remixes the project.
 db = new Datastore({ filename: '.data/datafile', autoload: true, timestampData: true });
 
-var texte = require('node-yaml').read('texte.yml', (err,data) => {app.texte = data});
+// Webhook validation
+app.get('/webhook', function(req, res) {
 
-app.db = db;
-//var routes = require("./routes.js")(app, db);
+  if (req.query['hub.mode'] && req.query['hub.verify_token'] === 'tuxedo_cat') {
+    res.status(200).send(req.query['hub.challenge']);
+  } else {
+    res.status(403).end();
+  }
+
+});
+
+// Message processing
+app.post('/webhook', function (req, res) {
+
+  console.log(req.body);
+
+  res.send(200).end();
+
+});
+
+
+
 var port = process.env.PORT || 3000;
 // listen for requests :) TEST 6
 var listener = app.listen(port, function () {
