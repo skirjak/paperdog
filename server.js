@@ -15,7 +15,8 @@ app.use(bodyParser.urlencoded({extended: true}));
 
 var actions = {
     fallback: 'input.unknown',
-    showStories: 'show.stories'
+    showStories: 'show.stories',
+    showStoriesAboutTopic: 'show.storiesAboutTopic'
 }
 
 //app.use(express.static('public'));
@@ -47,6 +48,7 @@ app.post('/webhook', function (req, res) {
   
     console.log('get message at ' + message.timestamp);
     console.log('get action ' + action);
+    console.log('msg: ' + JSON.stringify(message));
 
     switch(action) {
 
@@ -65,12 +67,22 @@ app.post('/webhook', function (req, res) {
           
           var responseMessage = decorateForAPI(facebookResponse);
           
-          console.log('response ' + JSON.stringify(responseMessage));
-          
           res.json(responseMessage);
           
         }, (error) => {
           console.err(error)
+        });
+          
+        break;
+        
+        case actions.showStoriesAboutTopic:
+        
+        presseportal(getTopic(message), { requestType: 'all'})
+          .then(data => data.content.story)
+          .then(integration.pressMessages)
+          .then((result) => {
+            console.log('result' + JSON.stringify(result))
+            res.json(decorateForAPI(result))
         });
           
         break;
@@ -120,4 +132,8 @@ function getContext(message) {
 
 function getAction(message) {
   return message.result.action;
+}
+
+function getTopic(message) {
+  return message.result.parameters.topic;
 }

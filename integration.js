@@ -62,6 +62,8 @@ function stories(stories) {
 }
 
 function story(story) {
+  
+  
   return {
     title: story.title.substring(0, 80),
     subtitle: story.teaser.substring(0, 80),
@@ -96,8 +98,9 @@ function story(story) {
  * @param {Array<Object>} data
  * @returns
  */
-function pressMessages (id, data) {
-  return facebookMessage(id, cards(data.map(pressMessage)))
+function pressMessages (data) {
+  console.log(data)
+  return cards(data.map(pressMessage))
 }
 
 function pressMessage ({
@@ -105,27 +108,24 @@ function pressMessage ({
   teaser,
   url
 }) {
-  return [{
+  return {
     title,
     subtitle: teaser,
     // url,
-    default_action: {
-      type: 'web_url',
-      url,
-      messenger_extensions: true,
-      webview_height_ratio: 'tall'
-    },
+//    default_action: {
+//      type: 'web_url',
+//      url,
+//      messenger_extensions: true,
+//      webview_height_ratio: 'tall'
+ //   },
     buttons: [{
       title: 'Mehr',
       payload: constants.states.MORE_OF_SIMILAR_MESSAGES
     }, {
-      title: 'Details',
-      payload: constants.states.NEWS_DETAILS
-    }, {
       title: 'Weniger',
       payload: constants.states.LESS_OF_SIMILAR_MESSAGES
-    }].map(button)
-  }]
+    }].map(e => button(e, 'postback'))
+  }
 }
 
 function welcome (id, data) {
