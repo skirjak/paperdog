@@ -19,7 +19,7 @@ var Datastore = require('nedb'),
 // which doesn't get copied if someone remixes the project.
 db = new Datastore({ filename: '.data/datafile', autoload: true, timestampData: true });
 
-//var texte = require('node-yaml').read('texte.yml', (err,data) => {app.texte = data});
+var texte = require('node-yaml').read('texte.yml', (err,data) => {app.texte = data});
 
 app.db = db;
 //var routes = require("./routes.js")(app, db);
