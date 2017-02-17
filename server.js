@@ -35,14 +35,14 @@ app.post('/webhook', function (req, res) {
 
   console.log(req.body);
 
+  //
+
   res.send(200).end();
 
 });
 
 
-
-var port = process.env.PORT || 3000;
-// listen for requests :) TEST 6
-var listener = app.listen(port, function () {
-  console.log('Your app is listening on port ' + listener.address().port);
+// start
+var server = app.listen(process.env.PORT || 3000, function () {
+  console.log("Listening on port %s", server.address().port);
 });
