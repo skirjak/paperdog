@@ -35,7 +35,9 @@ app.get('/webhook', function(req, res) {
 
 // Message processing
 app.post('/webhook', function (req, res) {
-  console.log(req.body);
+  
+  var original = req.body.originalRequest || {};
+  console.log(JSON.stringify(original, null, '\t'));
   let data = req.body;
   
   
@@ -44,18 +46,20 @@ app.post('/webhook', function (req, res) {
       else if(newDoc) console.log("Test inserted in the database");
     });
 
-  // Make sure this is a page subscription
-  if (data.object === 'page') {
-    
-
-
-    // Assume all went well.
-    //
-    // You must send back a 200, within 20 seconds, to let us know
-    // you've successfully received the callback. Otherwise, the request
-    // will time out and we will keep trying to resend.
-    res.send(200).end();
+  res.status(200).send({
+"speech": "Barack Hussein Obama II is the 44th and current President of the United States.",
+"displayText": "Barack Hussein Obama II is the 44th and current President of the United States, and the first African American to hold the office. Born in Honolulu, Hawaii, Obama is a graduate of Columbia University   and Harvard Law School, where ",
+"data": {
+  facebook: {
+    message: {
+      text: 'Donald'
+    }
   }
+},
+"contextOut": [],
+"source": "DuckDuckGo"
+});
+  
 });
 
 // Display the web page
@@ -63,17 +67,6 @@ app.get('/', function(req, res) {
   res.writeHead(200, {'Content-Type': 'text/html'});
   res.write(messengerButton);
   res.end();
-});
-
-// Display the web page
-app.get('/db', function(req, res) {
-
-    db.find({}, function (err, docs) {
-
-        res.send(docs).end();
-
-    });
-
 });
 
 function handleError(err, response) {
