@@ -1,0 +1,62 @@
+{
+  "id": "c279207d-0e31-4f52-a090-5b3f657c6649",
+  "timestamp": "2017-02-17T12:56:39.285Z",
+  "lang": "de",
+  "result": {
+    "source": "agent",
+    "resolvedQuery": "Nachrichten über Obama",
+    "action": "",
+    "actionIncomplete": true,
+    "parameters": {
+      "Topic": ""
+    },
+    "contexts": [
+      {
+        "name": "742c9ab1-bfc7-420d-a3f4-b9eadf0cbff5_id_dialog_context",
+        "parameters": {
+          "Topic.original": "",
+          "Topic": ""
+        },
+        "lifespan": 2
+      },
+      {
+        "name": "showstoriesabouttopic_dialog_context",
+        "parameters": {
+          "Topic.original": "",
+          "Topic": ""
+        },
+        "lifespan": 2
+      },
+      {
+        "name": "showstoriesabouttopic_dialog_params_topic",
+        "parameters": {
+          "Topic.original": "",
+          "Topic": ""
+        },
+        "lifespan": 1
+      }
+    ],
+    "metadata": {
+      "intentId": "742c9ab1-bfc7-420d-a3f4-b9eadf0cbff5",
+      "webhookUsed": "true",
+      "webhookForSlotFillingUsed": "true",
+      "intentName": "showStoriesAboutTopic"
+    },
+    "fulfillment": {
+      "speech": "What is the Topic?",
+      "messages": [
+        {
+          "type": 0,
+          "speech": "What is the Topic?"
+        }
+      ]
+    },
+    "score": 0.87
+  },
+  "status": {
+    "code": 206,
+    "errorType": "partial_content",
+    "errorDetails": "Webhook call failed. Error message: org.springframework.web.client.RestClientException: Could not extract response: no suitable HttpMessageConverter found for response type [class com.speaktoit.api.server.webhook.model.WebhookResponse] and content type [text/plain;charset=utf-8] ErrorId: 66070909-235a-4efe-88b9-572eda90dc59"
+  },
+  "sessionId": "62311b73-6c08-4cf9-8b85-cf11e44cd8cc"
+}
