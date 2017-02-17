@@ -13,8 +13,8 @@ var bodyParser = require("body-parser");
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
-var intents = {
-    fallback: 'input.uknown',
+var actions = {
+    fallback: 'input.unknown',
     showStories: 'show.stories'
 }
 
@@ -42,31 +42,32 @@ app.get('/webhook', function(req, res) {
 app.post('/webhook', function (req, res) {
 
     var message = req.body;
-    console.log('get message ' + message.timestamp);
-  console.log(presseportal);
 
     var action = getAction(message);
+  
+    console.log('get message at ' + message.timestamp);
+    console.log('get action ' + action);
 
     switch(action) {
 
-        case intents.fallback:
+        case actions.fallback:
             
             var responseMessage = decorateForAPI(integration.topics(1));
             console.log(JSON.stringify(responseMessage));
             res.json(responseMessage);
             break;
         
-      case intents.showStories:
+      case actions.showStories:
         
         presseportal('merkel', { requestType: 'all'}).then((response) => {
           
-          
-          
           var facebookResponse = integration.stories(response.content.story);
           
-          console.log('response ' + JSON.stringify(decorateForAPI(facebookResponse)));
+          var responseMessage = decorateForAPI(facebookResponse);
           
-          res.json(decorateForAPI(facebookResponse));
+          console.log('response ' + JSON.stringify(responseMessage));
+          
+          res.json(responseMessage);
           
         }, (error) => {
           console.err(error)
