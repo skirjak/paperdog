@@ -3,6 +3,8 @@
 // where your node app starts
 // init project
 var express = require('express');
+var assert = require('assert');
+var integration = require('./integration.js');
 var app = express();
 app.set('json spaces', 4);
 
@@ -33,9 +35,11 @@ app.get('/webhook', function(req, res) {
 // Message processing
 app.post('/webhook', function (req, res) {
 
-  console.log(req.body);
+  //console.log(req.body.result.contexts);
 
-  //
+  var recipientId = getRecipient(req.body);
+
+  console.log(JSON.stringify(integration.topics(recipientId), null, '\t'));
 
   res.send(200).end();
 
@@ -46,3 +50,26 @@ app.post('/webhook', function (req, res) {
 var server = app.listen(process.env.PORT || 3000, function () {
   console.log("Listening on port %s", server.address().port);
 });
+
+function decorateForAPI(facebookResponse) {
+
+  return {
+
+
+      "speech": "Barack ",
+      "displayText": "Barack Hussein",
+      "data": {
+        facebook: facebookResponse
+      },
+      "contextOut": [],
+      "source": "paperdog"
+
+  };
+}
+
+function getRecipient(message) {
+  assert(message);
+  assert(message.originalRequest);
+
+  return message.originalRequest.recipient.id;
+}
