@@ -64,7 +64,7 @@ function stories(stories) {
 function story(story) {
   return {
     title: story.title.substring(0, 80),
-    //subtitle: story.teaser.substring(0,80),
+    subtitle: story.teaser.substring(0, 80),
     buttons :[
              {
         "type":"web_url",
