@@ -1,7 +1,7 @@
 'use strict'
 
 const constants = require('./constants')
-const { button, plainMessage, showTyping, quickReply } = require('./facebook')
+const { button, plainMessage, showTyping, quickReply, facebookMessage, cards } = require('./facebook')
 const MAX_RESORTS = 3
 
 function randomEntry (data) {
@@ -17,7 +17,9 @@ function choseEntry (topics, data, max) {
 }
 
 function getNewTopics (type, alreadyChosen, alreadyShown) {
-  return Object.keys(constants[type]).filter(e => !alreadyChosen.includes(e) && !alreadyShown.includes(e))
+  return Object.keys(constants[type])
+    .filter(e => !alreadyChosen.includes(e) && !alreadyShown.includes(e))
+    .map(e => constants[type][e])
 }
 
 function getTopics (alreadyChosen = [], alreadyShown = [], MAX_TOTAL_TOPICS = 5) {
@@ -39,7 +41,7 @@ function topics (id) {
   // TODO: Read alreadyChosen and alreadyShown entries from database
   const alreadyChosen = []
   const alreadyShown = []
-  return plainMessage(id, getTopics(alreadyChosen, alreadyShown).map(topic))
+  return facebookMessage(id, cards(getTopics(alreadyChosen, alreadyShown).map(topic)))
 }
 
 function topic (title) {
@@ -59,7 +61,7 @@ function topic (title) {
  * @returns
  */
 function pressMessages (id, data) {
-  return plainMessage(id, data.map(pressMessage))
+  return facebookMessage(id, cards(data.map(pressMessage)))
 }
 
 function pressMessage ({

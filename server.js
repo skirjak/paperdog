@@ -12,6 +12,10 @@ var bodyParser = require("body-parser");
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
+var intents = {
+    fallback: 'Default Fallback Intent'
+}
+
 //app.use(express.static('public'));
 
 // setup db
@@ -35,15 +39,22 @@ app.get('/webhook', function(req, res) {
 // Message processing
 app.post('/webhook', function (req, res) {
 
-  //console.log(req.body.result.contexts);
+    var message = req.body;
+    var recipientId = getRecipient(req.body);
 
-  var recipientId = getRecipient(req.body);
+    var intent = getIntent(message);
 
-  console.log(JSON.stringify(integration.topics(recipientId), null, '\t'));
+    switch(intent) {
 
-  var responseMessage = decorateForAPI(integration.topics(recipientId));
+        case intents.fallback:
+            console.log(JSON.stringify(integration.topics(recipientId), null, '\t'));
+            var responseMessage = decorateForAPI(integration.topics(recipientId));
+            res.status(200).send(responseMessage);
+            break;
 
-  res.status(200).send(responseMessage);
+        default: res.status(200);
+
+    }
 
 });
 
@@ -74,4 +85,12 @@ function getRecipient(message) {
   assert(message.originalRequest);
 
   return message.originalRequest.data.recipient.id;
+}
+
+function getIntent(message) {
+    return message.result.metadata.intentName;
+}
+
+function getContext(message) {
+
 }

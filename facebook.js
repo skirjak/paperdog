@@ -63,6 +63,18 @@ function facebookMessage (id, message) {
   }
 }
 
+function cards (data) {
+  return {
+    attachment: {
+      type: 'template',
+      payload: {
+        template_type: 'generic',
+        elements: data
+      }
+    }
+  }
+}
+
 function plainMessage (id, message) {
   assert(id)
   assert(message)
@@ -85,5 +97,7 @@ module.exports = {
   quickReply,
   button,
   plainMessage,
+  facebookMessage,
+  cards,
   showTyping
 }
