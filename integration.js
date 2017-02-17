@@ -66,14 +66,19 @@ function story(story) {
     title: story.title.substring(0, 80),
     //subtitle: story.teaser.substring(0,80),
     buttons :[
-      {
-        "type":"postback",
-        "title": "Bookmark Item",
-        "payload": 'vasja'
-      },       {
+             {
         "type":"web_url",
         "url": story.url,
         "title": 'Lesen'
+      },
+      {
+        "type": "postback",
+        "title": "mehr",
+        "payload": 'story.more'
+      }, { 
+        "type": "postback",
+        "title": "weniger",
+        "payload": 'story.less'
       }
     ]
   }
