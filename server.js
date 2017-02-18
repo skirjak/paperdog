@@ -87,7 +87,9 @@ app.post('/webhook', function (req, res) {
             .then(integration.pressMessages)
             .then((result) => {
               console.log('result' + JSON.stringify(result))
-              res.json(decorateForAPI(result))          
+              //getFacebookElements(result);  
+              res.json(decorateForAPI(result));              
+            
             });        
           break;
         
@@ -117,18 +119,22 @@ var server = app.listen(process.env.PORT || 3000, function () {
 
 function decorateForAPI(facebookResponse) {
 
-  return {
+  var result = {
 
-      "speech": "Barack ",
+      "speech": 'Leider habe ich nichts passendes gefunden',
       "displayText": "Barack Hussein",
-      "data": {
-        facebook: facebookResponse || {}
-        
-      },
       "contextOut": [],
       "source": "paperdog"
 
   };
+  
+  if(getFacebookElements(facebookResponse).length > 0) {
+    result.data = {
+      facebook: facebookResponse
+    }
+  }
+  
+  return result;
 }
 
 function getIntent(message) {
@@ -145,4 +151,8 @@ function getTopic(message) {
 
 function getTerms(message) {
   return message.result.parameters.search;
+}
+
+function getFacebookElements(result) {
+  return result.attachment.payload.elements;
 }

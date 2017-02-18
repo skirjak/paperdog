@@ -130,7 +130,7 @@ function pressMessage ({
       title: 'Erzähl mir mehr',
       payload: constants.states.MORE_OF_SIMILAR_MESSAGES + ';' + query
     }, {
-      title: 'Interessiert nicht',
+      title: 'kein Interesse',
       payload: constants.states.LESS_OF_SIMILAR_MESSAGES
     }].map(e => button(e, 'postback'))
   }
