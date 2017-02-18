@@ -42,7 +42,9 @@ function get (tags, {
   assert.ok(typeof tags === 'string' || Array.isArray(tags))
 
   // Request data from API
-  const requestStr = typeof tags === 'string' ? tags : tags.join(',')
+  let requestStr = typeof tags === 'string' ? tags : tags.join(',')
+  
+  requestStr = encodeURI(requestStr)
 
   const url = requestType === 'topic'
     ? `http://api.presseportal.de/api/article/${requestType}/${requestStr}/${mediaType}?api_key=${API_KEY}&teaser=${teaser}&lang=${lang}&format=json&limit=${limit}&start=${start}`
@@ -50,6 +52,7 @@ function get (tags, {
       ? `http://api.presseportal.de/api/?controller=app&method=article&type=story&id=${requestStr}&limit=${limit}&start=${start}&api_key=${API_KEY_V2}&api_version=2&lang=${lang}&format=json`
       : `http://api.presseportal.de/api/?controller=app&method=search&type=story&q=${requestStr}&limit=${limit}&start=${start}&api_key=${API_KEY_V2}&api_version=2&lang=${lang}&format=json`
 
+  
 console.log(url)
   return Promise.fromCallback(cb => request({
     url,
