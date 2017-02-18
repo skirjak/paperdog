@@ -18,7 +18,8 @@ app.use(bodyParser.urlencoded({extended: true}));
 var actions = {
     fallback: 'input.unknown',
     showStories: 'show.stories',
-    showStoriesAboutTopic: 'show.storiesAboutTopic'
+    showStoriesAboutTopic: 'show.storiesAboutTopic',
+    searchSimilar: 'search.similar'
 }
 
 //app.use(express.static('public'));
@@ -78,19 +79,29 @@ app.post('/webhook', function (req, res) {
           
         break;
         
-        case actions.showStoriesAboutTopic:
+      case actions.showStoriesAboutTopic:
         
-        presseportal(getTopic(message), { requestType: 'all'})
-          .then(data => data.content.story)
-          .then(integration.pressMessages)
-          .then((result) => {
-            console.log('result' + JSON.stringify(result))
-            res.json(decorateForAPI(result))
-          
-          });
-          
+          presseportal(getTopic(message), { requestType: 'all'})
+            .then(data => data.content.story)
+            .then(integration.pressMessages)
+            .then((result) => {
+              console.log('result' + JSON.stringify(result))
+              res.json(decorateForAPI(result))          
+            });        
+          break;
         
-          
+      case actions.searchSimilar:
+        
+        var testQuery = ['pr-hack', 'medien', 'bild'];
+        
+        presseportal(testQuery, { requestType: 'all'})
+            .then(data => data.content.story)
+            .then(integration.pressMessages)
+            .then((result) => {
+              console.log('result' + JSON.stringify(result))
+              res.json(decorateForAPI(result))          
+            });    
+        
         break;
 
         default: res.status(200);
@@ -121,19 +132,8 @@ function decorateForAPI(facebookResponse) {
   };
 }
 
-function getRecipient(message) {
-  assert(message);
-  assert(message.originalRequest);
-
-  return message.originalRequest.data.recipient.id;
-}
-
 function getIntent(message) {
     return message.result.metadata.intentName;
-}
-
-function getContext(message) {
-
 }
 
 function getAction(message) {
@@ -142,4 +142,8 @@ function getAction(message) {
 
 function getTopic(message) {
   return message.result.parameters.topic;
+}
+
+function getTerms(message) {
+  return message.result.parameter.search;
 }

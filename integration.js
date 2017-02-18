@@ -109,6 +109,7 @@ function pressMessage ({
   teaser,
   url
 }) {
+  var testQuery = ['pr-hack', 'medien', 'bild'];
   return {
     title,
     subtitle: teaser,
@@ -122,7 +123,7 @@ function pressMessage ({
  //   },
     buttons: [{
       title: 'Mehr',
-      payload: constants.states.MORE_OF_SIMILAR_MESSAGES
+      payload: constants.states.MORE_OF_SIMILAR_MESSAGES + ' ' + testQuery.join(',')
     }, {
       title: 'Weniger',
       payload: constants.states.LESS_OF_SIMILAR_MESSAGES
