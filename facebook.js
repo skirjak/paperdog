@@ -57,10 +57,7 @@ function facebookMessage (id, message) {
   assert(id)
   assert(message)
 
-  return {
-    recipient: { id },
-    message
-  }
+  return message
 }
 
 function cards (data) {

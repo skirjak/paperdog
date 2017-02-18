@@ -1,5 +1,6 @@
 'use strict'
 
+const request = require('request')
 const constants = require('./constants')
 const { button, plainMessage, showTyping, quickReply, facebookMessage, cards } = require('./facebook')
 const MAX_RESORTS = 3
@@ -45,14 +46,52 @@ function topics (id) {
 }
 
 function topic (title) {
-  return [{
+  return {
     title,
-    default_action: {
-      type: 'postback',
-      payload: `TOPIC_${title.toUpperCase()}`
-    }
-  }]
+    buttons :[
+      {
+        "type":"postback",
+        "title": "Auswählen",
+        "payload": `TOPIC_${title.toUpperCase()}`
+      }
+    ]
+  }
 }
+
+function stories(stories) {
+  return facebookMessage(1, cards(stories.map(story)));
+}
+
+function story(story) {
+  
+  
+  return {
+    title: story.title.substring(0, 80),
+    subtitle: story.teaser.substring(0, 80),
+    image_url: 'http://cache.pressmailing.net/thumbnail/liste/60fce31c-0594-4b64-8fc3-43f8c3bed618/news-aktuell-gmbh-blogpost-app-check-refind-dein-neues-digitales-gedaechtnis?crop=0,1,290,190',
+    buttons :[
+      {
+        "type":"web_url",
+        "url": story.url,
+        "title": 'Lesen'
+      },
+      {
+        "type": "postback",
+        "title": "mehr",
+        "payload": 'story.more'
+      }, { 
+        "type": "postback",
+        "title": "weniger",
+        "payload": 'story.less'
+      }
+    ]
+  }
+}
+
+//    default_action: {
+//      type: 'postback',
+//      payload: `TOPIC_${title.toUpperCase()}`
+//    }
 
 /**
  * Rewrite press content to facebook topic cards
@@ -60,36 +99,37 @@ function topic (title) {
  * @param {Array<Object>} data
  * @returns
  */
-function pressMessages (id, data) {
-  return facebookMessage(id, cards(data.map(pressMessage)))
+function pressMessages (data) {
+  console.log(data)
+  return cards(data.map(pressMessage))
 }
 
 function pressMessage ({
+  id,
   title,
   teaser,
   url
 }) {
-  return [{
+  return {
+    id,
     title,
     subtitle: teaser,
+    image_url: 'http://cache.pressmailing.net/thumbnail/liste/60fce31c-0594-4b64-8fc3-43f8c3bed618/news-aktuell-gmbh-blogpost-app-check-refind-dein-neues-digitales-gedaechtnis?crop=0,1,290,190',
     // url,
-    default_action: {
-      type: 'web_url',
-      url,
-      messenger_extensions: true,
-      webview_height_ratio: 'tall'
-    },
+//    default_action: {
+//      type: 'web_url',
+//      url,
+//      messenger_extensions: true,
+//      webview_height_ratio: 'tall'
+ //   },
     buttons: [{
       title: 'Mehr',
       payload: constants.states.MORE_OF_SIMILAR_MESSAGES
     }, {
-      title: 'Details',
-      payload: constants.states.NEWS_DETAILS
-    }, {
       title: 'Weniger',
       payload: constants.states.LESS_OF_SIMILAR_MESSAGES
-    }].map(button)
-  }]
+    }].map(e => button(e, 'postback'))
+  }
 }
 
 function welcome (id, data) {
@@ -101,7 +141,9 @@ module.exports = {
   welcome,
   plainMessage,
   topics,
+  stories,
   pressMessages,
   showTyping,
-  quickReply
+  quickReply,
+  story
 }

@@ -27,7 +27,7 @@ const API_KEY_V2 = process.env.API_KEY_V2 || env.API_KEY_V2
  * @returns {Promise}
  */
 function get (tags, {
-  requestType = 'topic', //, 'all'
+  requestType = 'topic', //, 'all', 'storyInfo'
   mediaType = 'document', // 'image', 'audio', 'video',
   lang = 'de',
   teaser = 1, // 0
@@ -36,14 +36,20 @@ function get (tags, {
 } = {}) {
   // Validate input
   assert.ok(['image', 'audio', 'document', 'video'].includes(mediaType))
-  assert.ok(['keyword', 'topic', 'all'].includes(requestType))
+  assert.ok(['keyword', 'topic', 'all', 'storyInfo'].includes(requestType))
   assert.ok(typeof tags === 'string' || Array.isArray(tags))
 
   // Request data from API
   const requestStr = typeof tags === 'string' ? tags : tags.join(',')
+  
+  
+  
   const url = requestType === 'topic'
     ? `http://api.presseportal.de/api/article/${requestType}/${requestStr}/${mediaType}?api_key=${API_KEY}&teaser=${teaser}&lang=${lang}&format=json&limit=${limit}&start=${start}`
-    : `http://api.presseportal.de/api/?controller=app&method=search&type=story&q=${requestStr}&limit=${limit}&start=${start}&api_key=${API_KEY_V2}&api_version=2&lang=${lang}&format=json`
+    : requestType === 'storyInfo'
+      ? `http://api.presseportal.de/api/?controller=app&method=article&type=story&id=${requestStr}&limit=${limit}&start=${start}&api_key=${API_KEY_V2}&api_version=2&lang=${lang}&format=json`
+      : `http://api.presseportal.de/api/?controller=app&method=search&type=story&q=${requestStr}&limit=${limit}&start=${start}&api_key=${API_KEY_V2}&api_version=2&lang=${lang}&format=json`
+  console.log('url ' + url)
   return Promise.fromCallback(cb => request({
     url,
     method: 'GET',
@@ -55,17 +61,5 @@ function get (tags, {
       process.exit(1)
     })
 }
-
-// get('sport').then(console.log)
-get(['newcomer'], {
-  requestType: 'all'
-}).then((body) => {
-  // const topics = 
-  // if (body.content) {
-  //   topics(body.content.story)
-  // }
-  console.log(body)
-  console.log(body.content)
-})
 
 module.exports = get
