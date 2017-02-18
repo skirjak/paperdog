@@ -64,7 +64,7 @@ app.post('/webhook', function (req, res) {
         
       case actions.showStories:
         
-        presseportal('Wissenschaft', { requestType: 'topic'}).then((response) => {
+        presseportal.get('Wissenschaft', { requestType: 'topic'}).then((response) => {
           
           console.log(JSON.stringify(response))
           var facebookResponse = integration.stories(response.content.story);
@@ -81,7 +81,7 @@ app.post('/webhook', function (req, res) {
         
       case actions.showStoriesAboutTopic:
         
-          presseportal(getTopic(message), { requestType: 'all'})
+          presseportal.getAllData(getTopic(message), { requestType: 'all'})
             .then(data => data.content.story)
             .then(integration.pressMessages)
             .then((result) => {
@@ -92,7 +92,7 @@ app.post('/webhook', function (req, res) {
         
       case actions.searchSimilar:
         
-        presseportal(getTerms(message), { requestType: 'all'})
+        presseportal.getAllData(getTerms(message), { requestType: 'all'})
             .then(data => data.content.story)
             .then(integration.pressMessages)
             .then((result) => {
