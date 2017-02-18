@@ -3,8 +3,8 @@
 // where your node app starts
 // init project
 const Promise = require('bluebird')
-var express = require('express');
-var assert = require('assert');
+const express = require('express');
+const assert = require('assert');
 
 var integration = require('./integration.js');
 var presseportal = require('./presseportal.js');
@@ -84,27 +84,8 @@ app.post('/webhook', function (req, res) {
           .then(data => data.content.story)
           .then(integration.pressMessages)
           .then((result) => {
-          
-            console.log('get ' + JSON.stringify(result.attachment))
-          
-            Promise.all(result.attachment.payload.elements.map(storyElement => presseportal(storyElement.id, { requestType: 'storyInfo'})))
-              .then(stories => console.log(JSON.stringify(stories)))
-          
-          /*
-            presseportal('3563506', { requestType: 'storyInfo'}).then((response) => {
-          
-              console.log('result 1 -> ' + JSON.stringify(result));
-             assert(response.content.story.media)
-             assert(response.content.story.media.image)
-              
-          
-              result.image_url = response.content.story.media.image[0].url;
-              result.id = undefined;
-            
-              console.log('result 2 -> ' + JSON.stringify(result));
-          
-              res.json(decorateForAPI(result));
-              */
+            console.log('result' + JSON.stringify(result))
+            res.json(decorateForAPI(result))
           
           });
           
