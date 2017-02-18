@@ -86,9 +86,7 @@ app.post('/webhook', function (req, res) {
             .then(integration.pressMessages)
             .then((result) => {
               console.log('result' + JSON.stringify(result))
-              
-              res.json(decorateForAPI(result))
-            
+              res.json(decorateForAPI(result))          
             });        
           break;
         
@@ -99,8 +97,6 @@ app.post('/webhook', function (req, res) {
             .then(integration.pressMessages)
             .then((result) => {
               console.log('result' + JSON.stringify(result))
-              
-          
               res.json(decorateForAPI(result))          
             });    
         
