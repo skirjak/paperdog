@@ -109,7 +109,14 @@ function pressMessage ({
   teaser,
   url
 }) {
-  var testQuery = ['pr-hack', 'medien', 'bild'];
+  
+  function split(query) {
+    return query.split(' ').slice(0, 2).join(' ');
+  }
+  
+  var query = teaser.indexOf('Hackathon') >= 0 ? 'pr-hackathon' : 
+    title.indexOf(':') >= 0 ? split(title.split(':')[1]) : split(title)
+  
   return {
     title,
     subtitle: teaser,
@@ -123,7 +130,7 @@ function pressMessage ({
  //   },
     buttons: [{
       title: 'Mehr',
-      payload: constants.states.MORE_OF_SIMILAR_MESSAGES + ' ' + testQuery.join(',')
+      payload: constants.states.MORE_OF_SIMILAR_MESSAGES + ';' + query
     }, {
       title: 'Weniger',
       payload: constants.states.LESS_OF_SIMILAR_MESSAGES

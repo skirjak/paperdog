@@ -86,19 +86,21 @@ app.post('/webhook', function (req, res) {
             .then(integration.pressMessages)
             .then((result) => {
               console.log('result' + JSON.stringify(result))
-              res.json(decorateForAPI(result))          
+              
+              res.json(decorateForAPI(result))
+            
             });        
           break;
         
       case actions.searchSimilar:
         
-        var testQuery = ['pr-hack', 'medien', 'bild'];
-        
-        presseportal(testQuery, { requestType: 'all'})
+        presseportal(getTerms(message), { requestType: 'all'})
             .then(data => data.content.story)
             .then(integration.pressMessages)
             .then((result) => {
               console.log('result' + JSON.stringify(result))
+              
+          
               res.json(decorateForAPI(result))          
             });    
         
@@ -123,7 +125,7 @@ function decorateForAPI(facebookResponse) {
       "speech": "Barack ",
       "displayText": "Barack Hussein",
       "data": {
-        facebook: facebookResponse
+        facebook: facebookResponse || {}
         
       },
       "contextOut": [],
@@ -145,5 +147,5 @@ function getTopic(message) {
 }
 
 function getTerms(message) {
-  return message.result.parameter.search;
+  return message.result.parameters.search;
 }
