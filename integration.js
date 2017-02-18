@@ -122,17 +122,15 @@ function pressMessage ({
     subtitle: teaser,
     image_url: imageUrl, // 'http://cache.pressmailing.net/thumbnail/liste/60fce31c-0594-4b64-8fc3-43f8c3bed618/news-aktuell-gmbh-blogpost-app-check-refind-dein-neues-digitales-gedaechtnis?crop=0,1,290,190',
     // url,
-//    default_action: {
-//      type: 'web_url',
-//      url,
-//      messenger_extensions: true,
-//      webview_height_ratio: 'tall'
- //   },
+    default_action: {
+      type: 'web_url',
+      url
+    },
     buttons: [{
-      title: 'Mehr',
+      title: 'Erzähl mir mehr',
       payload: constants.states.MORE_OF_SIMILAR_MESSAGES + ';' + query
     }, {
-      title: 'Weniger',
+      title: 'Interessiert nicht',
       payload: constants.states.LESS_OF_SIMILAR_MESSAGES
     }].map(e => button(e, 'postback'))
   }

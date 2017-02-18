@@ -64,7 +64,8 @@ app.post('/webhook', function (req, res) {
         
       case actions.showStories:
         
-        presseportal.get('Wissenschaft', { requestType: 'topic'}).then((response) => {
+        presseportal.getAllData('Wissenschaft', { requestType: 'all'})
+          .then((response) => {
           
           console.log(JSON.stringify(response))
           var facebookResponse = integration.stories(response.content.story);

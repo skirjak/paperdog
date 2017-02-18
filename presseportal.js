@@ -77,7 +77,7 @@ function getAllData (tags, options = {}) {
             inner.content.story.media.image &&
             inner.content.story.media.image[0] &&
             inner.content.story.media.image[0].url
-          body.content.story[i].imageUrl = imageUrl
+          body.content.story[i].imageUrl = imageUrl || 'http://cache.pressmailing.net/thumbnail/liste/60fce31c-0594-4b64-8fc3-43f8c3bed618/news-aktuell-gmbh-blogpost-app-check-refind-dein-neues-digitales-gedaechtnis?crop=0,1,290,190'
         })
       }).return(body)
     }
