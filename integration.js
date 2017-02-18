@@ -1,5 +1,6 @@
 'use strict'
 
+const request = require('request')
 const constants = require('./constants')
 const { button, plainMessage, showTyping, quickReply, facebookMessage, cards } = require('./facebook')
 const MAX_RESORTS = 3
@@ -104,11 +105,13 @@ function pressMessages (data) {
 }
 
 function pressMessage ({
+  id,
   title,
   teaser,
   url
 }) {
   return {
+    id,
     title,
     subtitle: teaser,
     image_url: 'http://cache.pressmailing.net/thumbnail/liste/60fce31c-0594-4b64-8fc3-43f8c3bed618/news-aktuell-gmbh-blogpost-app-check-refind-dein-neues-digitales-gedaechtnis?crop=0,1,290,190',
