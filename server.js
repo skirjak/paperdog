@@ -3,8 +3,8 @@
 // where your node app starts
 // init project
 const Promise = require('bluebird')
-var express = require('express');
-var assert = require('assert');
+const express = require('express');
+const assert = require('assert');
 
 var integration = require('./integration.js');
 var presseportal = require('./presseportal.js');
@@ -18,7 +18,8 @@ app.use(bodyParser.urlencoded({extended: true}));
 var actions = {
     fallback: 'input.unknown',
     showStories: 'show.stories',
-    showStoriesAboutTopic: 'show.storiesAboutTopic'
+    showStoriesAboutTopic: 'show.storiesAboutTopic',
+    searchSimilar: 'search.similar'
 }
 
 //app.use(express.static('public'));
@@ -63,7 +64,7 @@ app.post('/webhook', function (req, res) {
         
       case actions.showStories:
         
-        presseportal('Wissenschaft', { requestType: 'topic'}).then((response) => {
+        presseportal.get('Wissenschaft', { requestType: 'topic'}).then((response) => {
           
           console.log(JSON.stringify(response))
           var facebookResponse = integration.stories(response.content.story);
@@ -78,38 +79,27 @@ app.post('/webhook', function (req, res) {
           
         break;
         
-        case actions.showStoriesAboutTopic:
+      case actions.showStoriesAboutTopic:
         
-        presseportal(getTopic(message), { requestType: 'all'})
-          .then(data => data.content.story)
-          .then(integration.pressMessages)
-          .then((result) => {
-          
-            console.log('get ' + JSON.stringify(result.attachment))
-          
-            Promise.all(result.attachment.payload.elements.map(storyElement => presseportal(storyElement.id, { requestType: 'storyInfo'})))
-              .then(stories => console.log(JSON.stringify(stories)))
-          
-          /*
-            presseportal('3563506', { requestType: 'storyInfo'}).then((response) => {
-          
-              console.log('result 1 -> ' + JSON.stringify(result));
-             assert(response.content.story.media)
-             assert(response.content.story.media.image)
-              
-          
-              result.image_url = response.content.story.media.image[0].url;
-              result.id = undefined;
-            
-              console.log('result 2 -> ' + JSON.stringify(result));
-          
-              res.json(decorateForAPI(result));
-              */
-          
-          });
-          
+          presseportal.getAllData(getTopic(message), { requestType: 'all'})
+            .then(data => data.content.story)
+            .then(integration.pressMessages)
+            .then((result) => {
+              console.log('result' + JSON.stringify(result))
+              res.json(decorateForAPI(result))          
+            });        
+          break;
         
-          
+      case actions.searchSimilar:
+        
+        presseportal.getAllData(getTerms(message), { requestType: 'all'})
+            .then(data => data.content.story)
+            .then(integration.pressMessages)
+            .then((result) => {
+              console.log('result' + JSON.stringify(result))
+              res.json(decorateForAPI(result))          
+            });    
+        
         break;
 
         default: res.status(200);
@@ -131,7 +121,7 @@ function decorateForAPI(facebookResponse) {
       "speech": "Barack ",
       "displayText": "Barack Hussein",
       "data": {
-        facebook: facebookResponse
+        facebook: facebookResponse || {}
         
       },
       "contextOut": [],
@@ -140,19 +130,8 @@ function decorateForAPI(facebookResponse) {
   };
 }
 
-function getRecipient(message) {
-  assert(message);
-  assert(message.originalRequest);
-
-  return message.originalRequest.data.recipient.id;
-}
-
 function getIntent(message) {
     return message.result.metadata.intentName;
-}
-
-function getContext(message) {
-
 }
 
 function getAction(message) {
@@ -161,4 +140,8 @@ function getAction(message) {
 
 function getTopic(message) {
   return message.result.parameters.topic;
+}
+
+function getTerms(message) {
+  return message.result.parameters.search;
 }

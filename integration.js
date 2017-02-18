@@ -100,21 +100,27 @@ function story(story) {
  * @returns
  */
 function pressMessages (data) {
-  console.log(data)
   return cards(data.map(pressMessage))
 }
 
 function pressMessage ({
-  id,
   title,
   teaser,
-  url
+  url,
+  imageUrl
 }) {
+  
+  function split(query) {
+    return query.split(' ').slice(0, 2).join(' ');
+  }
+  
+  var query = teaser.indexOf('Hackathon') >= 0 ? 'pr-hackathon' : 
+    title.indexOf(':') >= 0 ? split(title.split(':')[1]) : split(title)
+  
   return {
-    id,
     title,
     subtitle: teaser,
-    image_url: 'http://cache.pressmailing.net/thumbnail/liste/60fce31c-0594-4b64-8fc3-43f8c3bed618/news-aktuell-gmbh-blogpost-app-check-refind-dein-neues-digitales-gedaechtnis?crop=0,1,290,190',
+    image_url: imageUrl, // 'http://cache.pressmailing.net/thumbnail/liste/60fce31c-0594-4b64-8fc3-43f8c3bed618/news-aktuell-gmbh-blogpost-app-check-refind-dein-neues-digitales-gedaechtnis?crop=0,1,290,190',
     // url,
 //    default_action: {
 //      type: 'web_url',
@@ -124,7 +130,7 @@ function pressMessage ({
  //   },
     buttons: [{
       title: 'Mehr',
-      payload: constants.states.MORE_OF_SIMILAR_MESSAGES
+      payload: constants.states.MORE_OF_SIMILAR_MESSAGES + ';' + query
     }, {
       title: 'Weniger',
       payload: constants.states.LESS_OF_SIMILAR_MESSAGES
