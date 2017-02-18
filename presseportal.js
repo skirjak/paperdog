@@ -3,6 +3,8 @@
 const Promise = require('bluebird')
 const request = require('request')
 const assert = require('assert')
+const _ = require('lodash')
+
 let env = {}
 
 try {
@@ -41,15 +43,14 @@ function get (tags, {
 
   // Request data from API
   const requestStr = typeof tags === 'string' ? tags : tags.join(',')
-  
-  
-  
+
   const url = requestType === 'topic'
     ? `http://api.presseportal.de/api/article/${requestType}/${requestStr}/${mediaType}?api_key=${API_KEY}&teaser=${teaser}&lang=${lang}&format=json&limit=${limit}&start=${start}`
     : requestType === 'storyInfo'
       ? `http://api.presseportal.de/api/?controller=app&method=article&type=story&id=${requestStr}&limit=${limit}&start=${start}&api_key=${API_KEY_V2}&api_version=2&lang=${lang}&format=json`
       : `http://api.presseportal.de/api/?controller=app&method=search&type=story&q=${requestStr}&limit=${limit}&start=${start}&api_key=${API_KEY_V2}&api_version=2&lang=${lang}&format=json`
-  console.log('url ' + url)
+
+console.log(url)
   return Promise.fromCallback(cb => request({
     url,
     method: 'GET',
@@ -62,4 +63,29 @@ function get (tags, {
     })
 }
 
-module.exports = get
+function getAllData (tags, options = {}) {
+  options.requestType = 'all'
+  return get(tags, options).then(body => {
+    if (body.content && body.content.story) {
+      const optionsCopy = _.clone(options)
+      optionsCopy.requestType = 'storyInfo'
+      return Promise.map(body.content.story, (e, i) => {
+        return get(e.id, optionsCopy).then(inner => {
+          const imageUrl = inner.content &&
+            inner.content.story &&
+            inner.content.story.media &&
+            inner.content.story.media.image &&
+            inner.content.story.media.image[0] &&
+            inner.content.story.media.image[0].url
+          body.content.story[i].imageUrl = imageUrl
+        })
+      }).return(body)
+    }
+    return body
+  })
+}
+
+module.exports = {
+  get,
+  getAllData
+}

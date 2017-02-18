@@ -100,20 +100,20 @@ function story(story) {
  * @returns
  */
 function pressMessages (data) {
-  console.log(data)
   return cards(data.map(pressMessage))
 }
 
 function pressMessage ({
   title,
   teaser,
-  url
+  url,
+  imageUrl
 }) {
   var testQuery = ['pr-hack', 'medien', 'bild'];
   return {
     title,
     subtitle: teaser,
-    image_url: 'http://cache.pressmailing.net/thumbnail/liste/60fce31c-0594-4b64-8fc3-43f8c3bed618/news-aktuell-gmbh-blogpost-app-check-refind-dein-neues-digitales-gedaechtnis?crop=0,1,290,190',
+    image_url: imageUrl, // 'http://cache.pressmailing.net/thumbnail/liste/60fce31c-0594-4b64-8fc3-43f8c3bed618/news-aktuell-gmbh-blogpost-app-check-refind-dein-neues-digitales-gedaechtnis?crop=0,1,290,190',
     // url,
 //    default_action: {
 //      type: 'web_url',
